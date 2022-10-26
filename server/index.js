@@ -1,28 +1,36 @@
 const express = require("express");
 const app = express();
-const {MongoClient} = require('mongodb');
-const url = "mongodb://localhost:27017";
-const client =  new MongoClient(url);
-const dbName = 'mern_stack';
+const { MongoClient } = require("mongodb");
 
-async function getData () {
-    await client.connect();
-    console.log('Connected successfully to server');
-    const db = client.db(dbName);
-    const usersColl = db.collection('users');
-    let usersCollection = await usersColl.find({}).toArray()
-    const animalsColl = db.collection('animals');
-    let animalsCollection = await animalsColl.find({}).toArray()
+async function connectDb() {
+  const url = "mongodb://localhost:27017";
+  const client = new MongoClient(url);
+  const dbName = "mern_stack";
+  await client.connect();
+  const db = client.db(dbName);
 
-    console.log( usersCollection );
+  return db;
 }
 
-getData()
-    // .then(console.log)
-    // .catch(console.error)
-    // .finally(() => client.close());
+app.get("/", async (req, res) => {
+  db = await connectDb();
+  // console.log(db);
+  const animalsColl = db.collection("animals");
+  let animalsCollection = await animalsColl.find({}).toArray();
+  console.log(animalsCollection);
 
+  res.send("Welcome to the homepage");
+});
 
-// app.listen(3001, () => {
-//     console.log('Premier test réussi parfectement');
-// })
+async function start() {
+  // await client.connect();
+  // const db = client.db(dbName);
+
+  //  const animalsColl = db.collection('animals');
+  //  let animalsCollection = await animalsColl.find({}).toArray()
+  //  console.log(animalsCollection);
+
+  app.listen(3000);
+}
+
+start();
