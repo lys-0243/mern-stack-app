@@ -14,12 +14,9 @@ async function connectDb() {
 
 app.get("/", async (req, res) => {
   db = await connectDb();
-  // console.log(db);
-  const animalsColl = db.collection("animals");
-  let animalsCollection = await animalsColl.find({}).toArray();
-  console.log(animalsCollection);
+  const animalsCollection = await db.collection("animals").find({}).toArray();
 
-  res.send("Welcome to the homepage");
+  res.send(`<h1>Bienvenu sur la page</h1> ${animalsCollection.map(animal =>`<p>${animal.name} - ${animal.espece}</p>`).join('')}`);
 });
 
 async function start() {
