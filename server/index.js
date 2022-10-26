@@ -1,26 +1,28 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose")
-const UserModel = require('./models/Users')
+const {MongoClient} = require('mongodb');
+const url = "mongodb://localhost:27017";
+const client =  new MongoClient(url);
+const dbName = 'mern_stack';
 
-mongoose.connect("mongodb+srv://sylvain:dipro0243@cluster1.gwadefh.mongodb.net/mern-stack?retryWrites=true&w=majority")
+async function getData () {
+    await client.connect();
+    console.log('Connected successfully to server');
+    const db = client.db(dbName);
+    const usersColl = db.collection('users');
+    let usersCollection = await usersColl.find({}).toArray()
+    const animalsColl = db.collection('animals');
+    let animalsCollection = await animalsColl.find({}).toArray()
 
-app.get("/getUsers", (req, res) => {
-    UserModel.find({}, (err, result) => {
-      if (err) {
-        res.json(err);
-      } else {
-        res.json(result);
-      }
-    });
-  });
-app.post("/createUser", async (req, res) => {
-    const user = req.body;
-    const newUser = new UserModel(user);
-    await newUser.save();
+    console.log( usersCollection );
+}
 
-    res.json(user)
-})
-app.listen(3001, () => {
-    console.log('Premier test réussi parfectement');
-})
+getData()
+    // .then(console.log)
+    // .catch(console.error)
+    // .finally(() => client.close());
+
+
+// app.listen(3001, () => {
+//     console.log('Premier test réussi parfectement');
+// })
