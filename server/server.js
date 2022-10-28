@@ -3,6 +3,7 @@ const app = express();
 const { MongoClient } = require("mongodb");
 app.set("view engine", "ejs");
 app.set("views", "./views");
+app.use(express.static("public"))
 
 async function connectDb() {
   const url = "mongodb://localhost:27017";
@@ -19,6 +20,10 @@ app.get("/", async (req, res) => {
   const animalsCollection = await db.collection("animals").find({}).toArray();
   res.render("home", {animalsCollection});
 });
+
+app.get("/admin",  (req, res) => {
+    res.render("admin")
+})
 
 async function start() {
   app.listen(3000);
